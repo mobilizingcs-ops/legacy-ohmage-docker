@@ -27,6 +27,10 @@ if [ $DB_HOST == 'localhost' ]; then
   service mysql start
   mysql -uroot mysql -e "CREATE DATABASE IF NOT EXISTS $DB_NAME; grant all on $DB_NAME.* to \"$DB_USER\"@\"$DB_HOST\" IDENTIFIED BY \"$DB_PASS\"; FLUSH PRIVILEGES;"
 fi
+
+# start nginx
+chmod -R 0744 /var/www/webapps/survey
+service nginx start
  
 # execute migrations
 /var/lib/ohmage/flyway/flyway migrate
