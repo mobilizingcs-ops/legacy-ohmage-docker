@@ -5,7 +5,7 @@ MAINTAINER Steve Nolen <technolengy@gmail.com>
 RUN set -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && apt-get install -y openjdk-7-jre-headless curl \
+    && apt-get install -y mysql-server openjdk-7-jre-headless nginx-full git curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
  
@@ -69,18 +69,17 @@ RUN set -x \
     && rm flyway.tar.gz
  
 #### download ohmage ####
-ENV OHMAGE_WAR_URL https://web.ohmage.org/ohmage/packages/latest/server/app.war
-ENV OHMAGE_MIGRATIONS_URL https://web.ohmage.org/ohmage/packages/latest/server/migrations.tar.gz
+ENV OHMAGE_PKGS_URL https://web.ohmage.org/ohmage/packages/latest
  
 WORKDIR $OHMAGE_DATA/flyway/sql
-RUN curl -fSL "$OHMAGE_WAR_URL" -o /usr/local/tomcat/webapps/app.war
-RUN curl -fSL "$OHMAGE_MIGRATIONS_URL" -o migrations.tar.gz && \
-    tar -xvf migrations.tar.gz && \
-    rm migrations.tar.gz
+RUN curl -fSL "$OHMAGE_PKGS_URL"/server/app.war -o /usr/local/tomcat/webapps/app.war
+RUN curl -fSL "$OHMAGE_PKGS_URL"/server/migrations.tar.gz -o migrations.tar.gz \
+    && tar -xvf migrations.tar.gz \
+    && rm migrations.tar.gz
  
 ADD run.sh /run.sh
 ADD ohmage.conf /etc/ohmage.conf
- 
+
 RUN chmod +x /run.sh
  
 #### setup run user ####
@@ -92,5 +91,6 @@ RUN useradd -ms /bin/bash ohmage && \
 EXPOSE 8080
  
 VOLUME /var/lib/ohmage
+VOLUME /var/lib/mysql
 
 CMD ["/run.sh"]
