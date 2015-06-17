@@ -49,6 +49,10 @@ This container contains a full ohmage platform, including commonly used web fron
 docker run -d -p 80:80 ohmage/platform
 ```
 
+### profiler
+
+This container is identical to the platform container, but includes the necessary configuration to connect the ohmage service running in the container to a java profiling tool! This will be formalized and actually deployed soon...but you're on your own for now. 
+
 ## Copyright
 Copyright (c) 2015 UC Regents
 See [LICENSE][] for details.
