@@ -5,7 +5,7 @@ MAINTAINER Steve Nolen <technolengy@gmail.com>
 RUN set -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && apt-get install -y mysql-server openjdk-7-jdk ant git curl \
+    && apt-get install -y mysql-server openjdk-7-jdk ant git curl libtcnative-1 \
     && git clone https://github.com/ohmage/server /usr/local/ohmage \
     && cd /usr/local/ohmage \
     && update-alternatives --set java /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java \
