@@ -5,9 +5,17 @@ MAINTAINER Steve Nolen <technolengy@gmail.com>
 RUN set -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && apt-get install -y mysql-server openjdk-7-jre-headless nginx-full git curl \
+    && apt-get install -y mysql-server openjdk-7-jdk ant git curl \
+    && git clone https://github.com/ohmage/server /usr/local/ohmage \
+    && cd /usr/local/ohmage \
+    && update-alternatives --set java /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java \
+    && ant clean dist \
+    && cp /usr/local/ohmage/dist/webapp-ohmage* /app.war \
+    && apt-get remove --purge -y openjdk-7-jdk ant \
+    && apt-get autoremove --purge -y \
+    && apt-get install -y openjdk-7-jre-headless \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/local/ohmage
  
 #### ohmage dirs ####
 ENV OHMAGE_DATA /var/lib/ohmage
@@ -44,7 +52,7 @@ RUN gpg --keyserver pool.sks-keyservers.net --recv-keys \
   F7DA48BB64BCB84ECBA7EE6935CD23C10D498E23
  
 ENV TOMCAT_MAJOR 7
-ENV TOMCAT_VERSION 7.0.61
+ENV TOMCAT_VERSION 7.0.63
 ENV TOMCAT_TGZ_URL https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz
  
 RUN set -x \
@@ -68,11 +76,11 @@ RUN set -x \
     && tar -xvf flyway.tar.gz --strip-components=1 \
     && rm flyway.tar.gz
  
-#### download ohmage ####
+#### download ohmage migrations ####
 ENV OHMAGE_PKGS_URL https://web.ohmage.org/ohmage/packages/latest
  
 WORKDIR $OHMAGE_DATA/flyway/sql
-RUN curl -fSL "$OHMAGE_PKGS_URL"/server/app.war -o /usr/local/tomcat/webapps/app.war
+RUN cp /app.war "$CATALINA_HOME"/webapps/app.war
 RUN curl -fSL "$OHMAGE_PKGS_URL"/server/migrations.tar.gz -o migrations.tar.gz \
     && tar -xvf migrations.tar.gz \
     && rm migrations.tar.gz
