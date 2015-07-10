@@ -49,6 +49,20 @@ This container contains a full ohmage platform, including commonly used web fron
 docker run -d -p 80:80 ohmage/platform
 ```
 
+#### frontend development
+Some brief instructions on how to make a beautiful docker-based ohmage frontend development environment using the platform container!
+
+A few pre-reqs:
+  * have docker installed (on mac environment, I highly suggest [kitematic](https://kitematic.com/)).
+  * local location where you plan to do your frontend development. In this example it will be `/Users/steve/git/admin_tool/`
+  * port 80 available on your docker box (on Mac OSX, this is the boot2docker vbox environment at 192.168.99.100)
+
+Commands
+  * `docker pull ohmage/platform`
+  * `docker run -p 80:80 -v /Users/steve/git/admin_tool:/var/www/navbar/admin_tool:ro -d ohmage/platform`
+
+You can now make code changes at will in `/Users/steve/git/admin_tool`, they will be reflected immediately at http://192.168.99.100/#admin_tool (note the address applies to the mac env mention above).
+
 ### profiler
 
 This container is identical to the platform container, but includes the necessary configuration to connect the ohmage service running in the container to a java profiling tool! This will be formalized and actually deployed soon...but you're on your own for now. 
