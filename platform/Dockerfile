@@ -8,17 +8,9 @@ RUN set -x \
     && apt-get install -y nginx-full git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
- 
-#### download ohmage ####
-ENV OHMAGE_PKGS_URL https://web.ohmage.org/ohmage/packages/latest
- 
-WORKDIR $OHMAGE_DATA/flyway/sql
-RUN curl -fSL "$OHMAGE_PKGS_URL"/server/app.war -o /usr/local/tomcat/webapps/app.war
-RUN curl -fSL "$OHMAGE_PKGS_URL"/server/migrations.tar.gz -o migrations.tar.gz \
-    && tar -xvf migrations.tar.gz \
-    && rm migrations.tar.gz
 
 #### download/extract ohmage frontends ####
+ENV OHMAGE_PKGS_URL https://web.ohmage.org/ohmage/packages/latest
 WORKDIR /var/www
 RUN git clone https://github.com/mobilizingcs/navbar.git -b generic --single-branch .
 RUN mkdir /var/www/webapps \
