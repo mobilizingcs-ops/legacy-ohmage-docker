@@ -71,6 +71,12 @@ This container is identical to the platform container, but includes the necessar
 docker run -p 80:80 -p 1099:1099 -p 10001:10001 -p 10002:10002 -e JMX_HOSTNAME=192.168.99.100 -d ohmage/profiler
 ```
 
+and then if you open visualvm (or some other profiler tool) and add a JMX connection, you should be able to connect using this insane bit of information (replacing your IP address if necessary):
+
+```
+service:jmx:rmi://192.168.99.100:10002/jndi/rmi://192.168.99.100:10001/jmxrmi
+```
+
 ## Copyright
 Copyright (c) 2015 UC Regents
 See [LICENSE][] for details.
