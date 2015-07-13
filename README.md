@@ -65,7 +65,11 @@ You can now make code changes at will in `/Users/steve/git/admin_tool`, they wil
 
 ### profiler
 
-This container is identical to the platform container, but includes the necessary configuration to connect the ohmage service running in the container to a java profiling tool! This will be formalized and actually deployed soon...but you're on your own for now. 
+This container is identical to the platform container, but includes the necessary configuration to connect the ohmage service running in the container to a java profiling tool! You'll need to pass an extra an extra environment variable and expose a few more ports when starting this one to specify how a profiling tool will find this container.  This parameter will be passed to [java.rmi.server.hostname](https://docs.oracle.com/javase/7/docs/technotes/guides/rmi/javarmiproperties.html), so it needs to actually match the address you will use to connect.  The default for `JMX_HOSTNAME` is `192.168.99.100` (this is the default boot2docker/kitematic environment location).
+
+```bash
+docker run -p 80:80 -p 1099:1099 -p 10001:10001 -p 10002:10002 -e JMX_HOSTNAME=192.168.99.100 -d ohmage/profiler
+```
 
 ## Copyright
 Copyright (c) 2015 UC Regents
