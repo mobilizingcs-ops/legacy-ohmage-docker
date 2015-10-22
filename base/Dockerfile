@@ -1,4 +1,4 @@
-FROM debian:wheezy
+FROM debian:jessie
 MAINTAINER Steve Nolen <technolengy@gmail.com>
 # Report issues here: https://github.com/ohmage/docker
  
@@ -6,11 +6,12 @@ RUN set -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get install -y mysql-server openjdk-7-jdk ant git curl libtcnative-1 \
-    && git clone https://github.com/ohmage/server /usr/local/ohmage \
+    && git clone -b master --single-branch https://github.com/ohmage/server /usr/local/ohmage \
     && cd /usr/local/ohmage \
     && update-alternatives --set java /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java \
     && ant clean dist \
     && cp /usr/local/ohmage/dist/webapp-ohmage* /app.war \
+    && cp -r /usr/local/ohmage/db/migration / \
     && apt-get remove --purge -y openjdk-7-jdk ant \
     && apt-get autoremove --purge -y \
     && apt-get install -y openjdk-7-jre-headless \
@@ -52,7 +53,7 @@ RUN gpg --keyserver pool.sks-keyservers.net --recv-keys \
   F7DA48BB64BCB84ECBA7EE6935CD23C10D498E23
  
 ENV TOMCAT_MAJOR 7
-ENV TOMCAT_VERSION 7.0.63
+ENV TOMCAT_VERSION 7.0.65
 ENV TOMCAT_TGZ_URL https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz
  
 RUN set -x \
@@ -76,20 +77,15 @@ RUN set -x \
     && tar -xvf flyway.tar.gz --strip-components=1 \
     && rm flyway.tar.gz
  
-#### download ohmage migrations ####
-ENV OHMAGE_PKGS_URL https://web.ohmage.org/ohmage/packages/latest
- 
 WORKDIR $OHMAGE_DATA/flyway/sql
-RUN cp /app.war "$CATALINA_HOME"/webapps/app.war
-RUN curl -fSL "$OHMAGE_PKGS_URL"/server/migrations.tar.gz -o migrations.tar.gz \
-    && tar -xvf migrations.tar.gz \
-    && rm migrations.tar.gz
+RUN mv /app.war "$CATALINA_HOME"/webapps/app.war
+RUN mv /migration/* .
  
 ADD run.sh /run.sh
 ADD ohmage.conf /etc/ohmage.conf
 
 RUN chmod +x /run.sh
- 
+
 #### setup run user ####
 RUN useradd -ms /bin/bash ohmage && \
     chown -R ohmage "$CATALINA_HOME" && \
@@ -97,7 +93,8 @@ RUN useradd -ms /bin/bash ohmage && \
     chown -R ohmage "$OHMAGE_LOG"
  
 EXPOSE 8080
- 
+
+VOLUME "$CATALINA_HOME"/webapps/
 VOLUME /var/lib/ohmage
 VOLUME /var/lib/mysql
 
