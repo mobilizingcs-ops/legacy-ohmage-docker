@@ -1,10 +1,6 @@
 upstream ohmage {
   server 127.0.0.1:8080 fail_timeout=10s;
 }
-upstream ocpu {
-  # server offered by Jeroen Ooms and Mobilize project. service is not guaranteed!
-  server dev.opencpu.org fail_timeout=10s;
-}
 
 server {
   listen 80;
@@ -32,17 +28,5 @@ server {
   }
   location ~ /\.git {
           deny all;
-  }
-
-  location /ocpu {
-    proxy_pass http://ocpu/ocpu;
-  }
-
-  location /navbar/plotapp {
-    proxy_pass http://ocpu/ocpu/library/plotbuilder/www;
-  }
-
-  location /webapps/plotapp {
-    proxy_pass http://ocpu/ocpu/library/plotbuilder/www;
   }
 }
