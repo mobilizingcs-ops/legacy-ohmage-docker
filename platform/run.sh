@@ -40,7 +40,6 @@ else
 fi
 
 # start nginx
-chmod -R 0744 /var/www/webapps/survey
 service nginx start
 
 # execute migrations
