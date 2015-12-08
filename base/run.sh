@@ -7,7 +7,8 @@ if [ -n "$MYSQL_ENV_MYSQL_ROOT_PASSWORD" ]; then
   DB_HOST=$MYSQL_PORT_3306_TCP_ADDR
   DB_PORT=$MYSQL_PORT_3306_TCP_PORT
 else
-  #assume no linked container. 
+  #assume no linked container.
+  echo "RUNNING CONTAINER WITH EMBEDDED MYSQL. DESTROYING THE CONTAINER WILL ALSO DESTROY THE DATABASE" 
   DB_HOST=localhost
   DB_PORT=3306
 fi
@@ -32,6 +33,13 @@ flyway.placeholders.base_dir=/var/lib/ohmage" > /var/lib/ohmage/flyway/conf/flyw
 
 # create database stuffz. different depending on linked mysql container.
 if [ -n "$MYSQL_ENV_MYSQL_ROOT_PASSWORD" ]; then
+  echo -n "waiting for mysql to start..."
+  while ! nc -w 1 $DB_HOST $DB_PORT &> /dev/null
+  do
+    echo -n .
+    sleep 1
+  done
+  echo 'mysql available.'
   mysql -uroot -p$MYSQL_ENV_MYSQL_ROOT_PASSWORD -h$DB_HOST -P$DB_PORT mysql -e "CREATE DATABASE IF NOT EXISTS $DB_NAME; grant all on $DB_NAME.* to \"$DB_USER\"@\"%\" IDENTIFIED BY \"$DB_PASS\"; FLUSH PRIVILEGES;"
 else
   service mysql start
