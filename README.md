@@ -40,6 +40,7 @@ Note that in both cases port `8080` will be used on the docker host to support t
   * `DB_USER`: defaults to `ohmage`
   * `DB_PASS`: defaults to `ohmage`
   * `FQDN`: defaults to `$HOSTNAME` (note this is used only important for ohmage when sending sign up links in email.)
+  * `LOG_LEVEL`: defaults to `WARN`, sets the logger level for ohmage.
 
 ### platform
 

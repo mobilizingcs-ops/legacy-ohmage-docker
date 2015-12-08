@@ -17,11 +17,20 @@ DB_NAME=${DB_NAME:-ohmage}
 DB_USER=${DB_USER:-ohmage}
 DB_PASS=${DB_PASS:-ohmage}
 FQDN=${FQDN:-$HOSTNAME}
+LOG_LEVEL=${LOG_LEVEL:-WARN}
  
 # update ohmage conf to point to correct db
 sed -i "s/^db.jdbcurl.*/db.jdbcurl=jdbc:mysql:\/\/$DB_HOST:$DB_PORT\/$DB_NAME?characterEncoding=utf8/" /etc/ohmage.conf
 sed -i "s/^db.username.*/db.username=$DB_USER/" /etc/ohmage.conf
 sed -i "s/^db.password.*/db.password=$DB_PASS/" /etc/ohmage.conf
+
+# update ohmage conf to set logging level
+sed -i "s/^log4j.rootLogger.*/log4j.rootLogger=$LOG_LEVEL, root, stdout/" /etc/ohmage.conf
+sed -i "s/^log4j.appender.stdout.Threshold.*/log4j.appender.stdout.Threshold = $LOG_LEVEL/" /etc/ohmage.conf
+sed -i "s/^log4j.logger.org.ohmage.*/log4j.logger.org.ohmage=$LOG_LEVEL/" /etc/ohmage.conf
+sed -i "s/^log4j.logger.org.springframework.*/log4j.logger.org.springframework=$LOG_LEVEL/" /etc/ohmage.conf
+sed -i "s/^log4j.logger.org.ohmage.util.JsonUtils.*/log4j.logger.org.ohmage.util.JsonUtils=$LOG_LEVEL/" /etc/ohmage.conf
+sed -i "s/^log4j.logger.org.ohmage.cache.UserBin.*/log4j.logger.org.ohmage.cache.UserBin=$LOG_LEVEL/" /etc/ohmage.conf
  
 # update flyway conf
 # note that the placeholders wont be updated at each boot.
