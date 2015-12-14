@@ -70,14 +70,15 @@ RUN set -x \
   && rm -rf /usr/local/tomcat/webapps/host-manager
  
 #### download flyway (ohmage doesn't do migrations) ####
-WORKDIR $OHMAGE_DATA/flyway
+RUN mkdir /flyway
+WORKDIR /flyway
 ENV FLYWAY_TGZ_URL http://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/3.2.1/flyway-commandline-3.2.1.tar.gz
 RUN set -x \
     && curl -fSL "$FLYWAY_TGZ_URL" -o flyway.tar.gz \
     && tar -xvf flyway.tar.gz --strip-components=1 \
     && rm flyway.tar.gz
  
-WORKDIR $OHMAGE_DATA/flyway/sql
+WORKDIR /flyway/sql
 RUN mv /app.war "$CATALINA_HOME"/webapps/app.war
 RUN mv /migration/* .
  

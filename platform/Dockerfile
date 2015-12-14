@@ -42,11 +42,10 @@ RUN curl -fsl  "$OHMAGE_PKGS_URL"/dashboard.tar.gz -o /var/www/webapps/dashboard
 RUN chown -R www-data.www-data /var/www \
   && chmod -R 0770 /var/www
  
-ADD run.sh /run.sh
+RUN sed -i 's/#platform-bits-here/service nginx start/g' /run.sh
 ADD nginx-ohmage /etc/nginx/sites-available/ohmage
  
-RUN chmod +x /run.sh \
-    && ln -s /etc/nginx/sites-available/ohmage /etc/nginx/sites-enabled/ohmage \
+RUN ln -s /etc/nginx/sites-available/ohmage /etc/nginx/sites-enabled/ohmage \
     && rm /etc/nginx/sites-enabled/default
  
 EXPOSE 80

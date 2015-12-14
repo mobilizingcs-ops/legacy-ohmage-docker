@@ -3,7 +3,7 @@
 set -e
 
 # if a container is linked as 'mysql', this should exist
-if [ -n "$MYSQL_ENV_MYSQL_ROOT_PASSWORD" ]; then
+if [ -n "$MYSQL_ENV_MYSQL_MAJOR" ]; then
   DB_HOST=$MYSQL_PORT_3306_TCP_ADDR
   DB_PORT=$MYSQL_PORT_3306_TCP_PORT
 else
@@ -38,7 +38,7 @@ echo "flyway.url=jdbc:mysql://$DB_HOST:$DB_PORT/$DB_NAME
 flyway.user=$DB_USER
 flyway.password=$DB_PASS
 flyway.placeholders.fqdn=$FQDN
-flyway.placeholders.base_dir=/var/lib/ohmage" > /var/lib/ohmage/flyway/conf/flyway.conf
+flyway.placeholders.base_dir=/var/lib/ohmage" > /flyway/conf/flyway.conf
 
 # create database stuffz. different depending on linked mysql container.
 if [ -n "$MYSQL_ENV_MYSQL_ROOT_PASSWORD" ]; then
@@ -53,11 +53,12 @@ if [ -n "$MYSQL_ENV_MYSQL_ROOT_PASSWORD" ]; then
 else
   service mysql start
   mysql -uroot mysql -e "CREATE DATABASE IF NOT EXISTS $DB_NAME; grant all on $DB_NAME.* to \"$DB_USER\"@\"$DB_HOST\" IDENTIFIED BY \"$DB_PASS\"; FLUSH PRIVILEGES;"
-
 fi
 
+#platform-bits-here
+
 # execute migrations
-/var/lib/ohmage/flyway/flyway migrate
+/flyway/flyway migrate
  
 # start tomcat in foreground
 /usr/local/tomcat/bin/catalina.sh run
