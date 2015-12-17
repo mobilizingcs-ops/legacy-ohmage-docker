@@ -20,9 +20,10 @@ FQDN=${FQDN:-$HOSTNAME}
 LOG_LEVEL=${LOG_LEVEL:-WARN}
  
 # update ohmage conf to point to correct db
+ESCAPED_PW=${DB_PASS/\&/\\&}
 sed -i "s/^db.jdbcurl.*/db.jdbcurl=jdbc:mysql:\/\/$DB_HOST:$DB_PORT\/$DB_NAME?characterEncoding=utf8/" /etc/ohmage.conf
 sed -i "s/^db.username.*/db.username=$DB_USER/" /etc/ohmage.conf
-sed -i "s/^db.password.*/db.password=$DB_PASS/" /etc/ohmage.conf
+sed -i "s/^db.password.*/db.password=$ESCAPED_PW/" /etc/ohmage.conf
 
 # update ohmage conf to set logging level
 sed -i "s/^log4j.rootLogger.*/log4j.rootLogger=$LOG_LEVEL, root, stdout/" /etc/ohmage.conf
