@@ -60,6 +60,16 @@ fi
 
 # execute migrations
 /flyway/flyway migrate
+
+# ensure ohmage directory structure exists
+mkdir -p /var/lib/ohmage/audio
+mkdir -p /var/lib/ohmage/audits
+mkdir -p /var/lib/ohmage/documents
+mkdir -p /var/lib/ohmage/images
+mkdir -p /var/lib/ohmage/videos
+mkdir -p /var/log/ohmage
+chown -R ohmage.ohmage /var/lib/ohmage
+chown -R ohmage.ohmage /var/log/ohmage
  
 # start tomcat in foreground
 exec /usr/local/tomcat/bin/catalina.sh run

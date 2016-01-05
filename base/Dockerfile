@@ -27,7 +27,6 @@ RUN set -x\
     && mkdir "$OHMAGE_DATA"/documents \
     && mkdir "$OHMAGE_DATA"/images \
     && mkdir "$OHMAGE_DATA"/videos \
-    && mkdir "$OHMAGE_DATA"/flyway \
     && mkdir -p "$OHMAGE_LOG"
  
 #### download tomcat ####
